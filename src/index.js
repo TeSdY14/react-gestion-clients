@@ -1,6 +1,9 @@
 import React from "react";
 import ReactDOM from "react-dom";
 
+import Client from "./Client";
+import ClientForm from "./ClientForm";
+
 class App extends React.Component {
   state = {
     clients: [
@@ -8,35 +11,24 @@ class App extends React.Component {
       { id: 2, nom: "José Perin" },
       { id: 3, nom: "Patrick Bizarre" },
     ],
-    newClient: "",
   };
 
-  handleChange = (event) => {
-    const inputValue = event.currentTarget.value;
-    this.setState({ newClient: inputValue });
-  };
-
-  handleSubmit = (event) => {
-    event.preventDefault();
-    const id = new Date().getTime();
-    const nomNewClient = this.state.newClient;
-
-    const client = { id: id, nom: nomNewClient };
-    const clients = this.state.clients.slice();
+  handleAddClient = (client) => {
+    /* en dessous : [ ...xxx] : Spread operator équivalent à : this.state.clients.slice() */
+    const clients = [...this.state.clients];
     clients.push(client);
-    this.setState({ clients: clients, newClient: "" });
+    this.setState({ clients });
   };
 
   handleDelete = (id) => {
     // Copie du tableau 'clients' original
-    const newClientsArray = this.state.clients.slice();
+    const clients = [...this.state.clients];
     // findIndex Compare permet de rechercher dans le tableau 'NewClients' l'objet client correspondant ayant le même ID que celui envoyé à handleDelete
-    const indexClient = newClientsArray.findIndex((client) => client.id === id);
-
+    const indexClient = clients.findIndex((client) => client.id === id);
     // La méthode splice() modifie le contenu d'un tableau en retirant des éléments et/ou en ajoutant de nouveaux éléments à même le tableau.On peut ainsi vider ou remplacer une partie d'un tableau.
-    newClientsArray.splice(indexClient, 1);
+    clients.splice(indexClient, 1);
     // On remplace le tableau original de 'clients' par le nouveau (celui sans le clients précédemment supprimé)
-    this.setState({ clients: newClientsArray });
+    this.setState({ clients });
   };
 
   render() {
@@ -48,21 +40,10 @@ class App extends React.Component {
         <ul>
           {element}
           {this.state.clients.map((cli) => (
-            <li key={cli.id}>
-              {cli.id + " | Nom : " + cli.nom}{" "}
-              <button onClick={() => this.handleDelete(cli.id)}>X</button>
-            </li>
+            <Client key={cli.id} client={cli} onDelete={this.handleDelete} />
           ))}
         </ul>
-        <form onSubmit={this.handleSubmit}>
-          <input
-            type="text"
-            placeholder="Ajouter un client"
-            value={this.state.newClient}
-            onChange={this.handleChange}
-          />
-          <button>Confirmer</button>
-        </form>
+        <ClientForm onAddClient={this.handleAddClient} />
       </div>
     );
   }
