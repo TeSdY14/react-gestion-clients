@@ -1,6 +1,19 @@
 import React from "react";
 import ReactDOM from "react-dom";
 
+const names = [
+  "Laurence Sophronius",
+  "Anaitis Itai",
+  "Rahim Júlia",
+  "Pascual Lou",
+  "Nestani Anthelm",
+  "Eris Lena",
+  "Nnenne Gemini",
+  "Vitus Pyong-Ho",
+  "Rose Nat",
+  "Wambui Cloelius",
+];
+
 class App extends React.Component {
   state = {
     clients: [
@@ -8,35 +21,20 @@ class App extends React.Component {
       { id: 2, nom: "José Perin" },
       { id: 3, nom: "Patrick Bizarre" },
     ],
-    newClient: "",
+    compteur: 0,
   };
 
-  handleChange = (event) => {
-    const inputValue = event.currentTarget.value;
-    this.setState({ newClient: inputValue });
-  };
-
-  handleSubmit = (event) => {
-    event.preventDefault();
-    const id = new Date().getTime();
-    const nomNewClient = this.state.newClient;
-
-    const client = { id: id, nom: nomNewClient };
-    const clients = this.state.clients.slice();
-    clients.push(client);
-    this.setState({ clients: clients, newClient: "" });
-  };
-
-  handleDelete = (id) => {
-    // Copie du tableau 'clients' original
+  handleClick = () => {
     const newClientsArray = this.state.clients.slice();
-    // findIndex Compare permet de rechercher dans le tableau 'NewClients' l'objet client correspondant ayant le même ID que celui envoyé à handleDelete
-    const indexClient = newClientsArray.findIndex((client) => client.id === id);
+    newClientsArray.push({
+      id: this.state.clients.length + 1,
+      nom: names[Math.floor(Math.random() * names.length)],
+    });
 
-    // La méthode splice() modifie le contenu d'un tableau en retirant des éléments et/ou en ajoutant de nouveaux éléments à même le tableau.On peut ainsi vider ou remplacer une partie d'un tableau.
-    newClientsArray.splice(indexClient, 1);
-    // On remplace le tableau original de 'clients' par le nouveau (celui sans le clients précédemment supprimé)
     this.setState({ clients: newClientsArray });
+    this.setState({ compteur: this.state.compteur + 1 });
+
+    console.log(this.state);
   };
 
   render() {
@@ -45,22 +43,20 @@ class App extends React.Component {
     return (
       <div>
         <h1>{title}</h1>
+        <button onClick={this.handleClick}>
+          Clique moi ! <span>(Compteur : {this.state.compteur})</span>
+        </button>
+
         <ul>
           {element}
           {this.state.clients.map((cli) => (
             <li key={cli.id}>
-              {cli.id + " | Nom : " + cli.nom}{" "}
-              <button onClick={() => this.handleDelete(cli.id)}>X</button>
+              {cli.id + " | Nom : " + cli.nom} <button>X</button>
             </li>
           ))}
         </ul>
-        <form onSubmit={this.handleSubmit}>
-          <input
-            type="text"
-            placeholder="Ajouter un client"
-            value={this.state.newClient}
-            onChange={this.handleChange}
-          />
+        <form>
+          <input type="text" placeholder="Ajouter un client" />
           <button>Confirmer</button>
         </form>
       </div>
