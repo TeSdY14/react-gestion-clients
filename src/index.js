@@ -3,6 +3,7 @@ import ReactDOM from "react-dom";
 
 import Client from "./Client";
 import ClientForm from "./ClientForm";
+import Counter from "./Counter"
 
 class App extends React.Component {
   state = {
@@ -13,10 +14,10 @@ class App extends React.Component {
     ],
   };
 
-  handleAddClient = (client) => {
+  handleAddClient = (newClient) => {
     /* en dessous : [ ...xxx] : Spread operator équivalent à : this.state.clients.slice() */
     const clients = [...this.state.clients];
-    clients.push(client);
+    clients.push(newClient);
     this.setState({ clients });
   };
 
@@ -37,6 +38,7 @@ class App extends React.Component {
     return (
       <div>
         <h1>{title}</h1>
+        <Counter />
         <ul>
           {element}
           {this.state.clients.map((cli) => (
