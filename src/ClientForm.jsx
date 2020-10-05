@@ -1,39 +1,35 @@
-import React, { Component } from "react";
+import React, {useState} from "react";
 
-class ClientForm extends Component {
-  state = {
-    newClient: "",
+const ClientForm = ({ onAddClient} ) => {
+  const [newClient, setAddClient] = useState("")
+
+  const handleChange = (event) => {
+    setAddClient( event.currentTarget.value )
   };
 
-  handleChange = (event) => {
-    this.setState({ newClient: event.currentTarget.value });
-  };
-
-  handleSubmit = (event) => {
+  const handleSubmit = (event) => {
     /* Empêcher le refresh page */
     event.preventDefault();
     /* Identifiant unique */
     const id = new Date().getTime();
-    const nom = this.state.newClient;
+    const nom = newClient;
 
-    this.props.onAddClient({ id, nom });
+    onAddClient({ id, nom });
     /* Vider le champ input */
-    this.setState({ newClient: "" });
+    setAddClient("")
   };
 
-  render() {
     return (
-      <form onSubmit={this.handleSubmit}>
+      <form onSubmit={handleSubmit}>
         <input
           type="text"
           placeholder="Ajouter un client"
-          value={this.state.newClient}
-          onChange={this.handleChange}
+          value={newClient}
+          onChange={handleChange}
         />
         <button>Confirmer</button>
       </form>
     );
   }
-}
 
 export default ClientForm;

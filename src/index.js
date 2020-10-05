@@ -1,55 +1,50 @@
-import React from "react";
+import React, {useState} from "react";
 import ReactDOM from "react-dom";
 
 import Client from "./Client";
 import ClientForm from "./ClientForm";
-import Counter from "./Counter"
 
-class App extends React.Component {
-  state = {
-    clients: [
+const App = () => {
+
+  const title = "Liste de nos clients";
+  const element = <li>Un élément 'li' seul</li>;
+
+  const [clients, setClients] = useState([
       { id: 1, nom: "Ted Dev" },
       { id: 2, nom: "José Perin" },
       { id: 3, nom: "Patrick Bizarre" },
-    ],
-  };
+    ])
 
-  handleAddClient = (newClient) => {
+  const handleAddClient = (newClient) => {
     /* en dessous : [ ...xxx] : Spread operator équivalent à : this.state.clients.slice() */
-    const clients = [...this.state.clients];
-    clients.push(newClient);
-    this.setState({ clients });
+    const addedClient = [...clients];
+    addedClient.push(newClient);
+    setClients(addedClient);
   };
 
-  handleDelete = (id) => {
+  const handleDelete = (id) => {
     // Copie du tableau 'clients' original
-    const clients = [...this.state.clients];
+    const updatedClients = [...clients];
     // findIndex Compare permet de rechercher dans le tableau 'NewClients' l'objet client correspondant ayant le même ID que celui envoyé à handleDelete
-    const indexClient = clients.findIndex((client) => client.id === id);
+    const indexClient = updatedClients.findIndex((client) => client.id === id);
     // La méthode splice() modifie le contenu d'un tableau en retirant des éléments et/ou en ajoutant de nouveaux éléments à même le tableau.On peut ainsi vider ou remplacer une partie d'un tableau.
-    clients.splice(indexClient, 1);
+    updatedClients.splice(indexClient, 1);
     // On remplace le tableau original de 'clients' par le nouveau (celui sans le clients précédemment supprimé)
-    this.setState({ clients });
+    setClients(updatedClients);
   };
-
-  render() {
-    const title = "Liste de nos clients";
-    const element = <li>Un élément 'li' seul</li>;
     return (
       <div>
         <h1>{title}</h1>
-        <Counter />
         <ul>
           {element}
-          {this.state.clients.map((cli) => (
-            <Client key={cli.id} client={cli} onDelete={this.handleDelete} />
+          {clients.map((cli) => (
+            <Client key={cli.id} client={cli} onDelete={handleDelete} />
           ))}
         </ul>
-        <ClientForm onAddClient={this.handleAddClient} />
+        <ClientForm onAddClient={handleAddClient} />
       </div>
     );
   }
-}
 
 const rootElement = document.getElementById("root");
 ReactDOM.render(
